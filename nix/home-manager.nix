@@ -80,6 +80,7 @@ in {
           oxlint
           prettier
           ripgrep
+          stylelint
           stylua
           tailwindcss-language-server
           tree-sitter

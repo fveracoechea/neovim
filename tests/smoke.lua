@@ -30,6 +30,7 @@ local function check_config()
     "git",
     "graphql-lsp",
     "stylelint-language-server",
+    "stylelint",
     "biome",
     "lua-language-server",
     "oxfmt",

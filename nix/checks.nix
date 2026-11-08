@@ -67,10 +67,13 @@ in {
     ${home.config.home.activation.neovimPluginLock.data}
 
     mkdir -p /tmp/neovim-development /tmp/neovim-checkout
-    cp ${configDir}/nvim-pack-lock.json /tmp/neovim-checkout/nvim-pack-lock.json
+    install -m644 ${configDir}/nvim-pack-lock.json /tmp/neovim-checkout/nvim-pack-lock.json
     cp -R ${development.config.home-files}/. /tmp/neovim-development/
     test -L /tmp/neovim-development/.config/nvim/nvim-pack-lock.json
     cmp /tmp/neovim-checkout/nvim-pack-lock.json /tmp/neovim-development/.config/nvim/nvim-pack-lock.json
+    printf 'writable development lock\n' > /tmp/neovim-development/.config/nvim/nvim-pack-lock.json
+    test "$(cat /tmp/neovim-checkout/nvim-pack-lock.json)" = 'writable development lock'
+    test -L /tmp/neovim-development/.config/nvim/nvim-pack-lock.json
     touch "$out"
   '';
 

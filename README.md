@@ -52,7 +52,7 @@ The native installation expects these commands on `PATH`:
 
 ```text
 cc tree-sitter curl tar git fd fzf rg gh lazygit unzip
-graphql-lsp stylelint-language-server biome lua-language-server
+graphql-lsp stylelint-language-server stylelint biome lua-language-server
 oxfmt oxlint tsc stylua prettier isort black magick
 vscode-css-language-server vscode-html-language-server
 vscode-json-language-server vscode-eslint-language-server
