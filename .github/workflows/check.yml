@@ -1,0 +1,36 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  nix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b
+      - run: nix flake check -L
+
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install native tools
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          brew install neovim just stylua luacheck shellcheck tree-sitter-cli \
+            lua-language-server biome oxfmt typescript vscode-langservers-extracted \
+            tailwindcss-language-server prettier black isort imagemagick fd fzf ripgrep gh lazygit bun
+          export BUN_INSTALL="$HOME/.bun"
+          bun add -g graphql-language-service-cli@3.5.0 @stylelint/language-server@1.1.1 oxlint@1.88.0
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - run: just check
+      - run: just check-runtime
