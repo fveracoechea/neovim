@@ -1,7 +1,7 @@
 # Neovim
 
 Shared Neovim configuration for Linux and macOS, with Home Manager and native installation options.
-The configuration focuses on JavaScript, TypeScript, React, and web development, with Lua, Nix, and Python tooling.
+The configuration focuses on JavaScript, TypeScript, React, and web development, with Lua and Nix tooling.
 
 - Neovim's built-in `vim.pack` manages plugins, with revisions pinned in [`nvim/nvim-pack-lock.json`](nvim/nvim-pack-lock.json).
 - Catppuccin Mocha uses a transparent background, with Bufferline tabs and a Lualine statusline.
@@ -26,7 +26,7 @@ The configuration focuses on JavaScript, TypeScript, React, and web development,
 ### Requirements
 
 - **Neovim 0.12 or newer.** The TypeScript server also requires a TypeScript version that provides `tsc --lsp`.
-- Internet access on first launch to download plugins, the CodeSnap native library, and Treesitter parsers.
+- Internet access on first launch to download plugins and Treesitter parsers.
 - A C compiler and the `tree-sitter` CLI to compile parsers.
 - The [external packages](#external-packages) for the features you use.
 - A Nerd Font is recommended for file, diagnostic, and statusline icons.
@@ -84,19 +84,19 @@ A Treesitter parser adds highlighting and indentation, not completion, diagnosti
 
 | Language or file type | Language-server features | Formatting |
 | --- | --- | --- |
-| JavaScript, TypeScript, JSX, TSX | TypeScript (`tsc`), ESLint, Biome, Oxlint; GraphQL and Relay in configured projects | Prettier, Biome, or Oxfmt |
-| HTML | HTML server; Tailwind CSS and configured web linters | Prettier, Biome, or Oxfmt |
+| JavaScript, TypeScript, JSX, TSX | TypeScript (`tsc`), ESLint, Oxlint; GraphQL and Relay in configured projects | Prettier or Oxfmt |
+| HTML | HTML server; Tailwind CSS and configured web linters | Prettier or Oxfmt |
 | CSS, SCSS, Less | CSS server; Tailwind CSS, with Stylelint where configured | CSS uses the shared formatter chain; SCSS/Less use Oxfmt or LSP fallback |
-| JSON, JSONC | JSON server with schemas for common configuration files; Biome where configured | Prettier, Biome, or Oxfmt |
-| GraphQL | GraphQL server in configured projects; Biome where configured | Prettier, Biome, or Oxfmt |
+| JSON, JSONC | JSON server with schemas for common configuration files | Prettier or Oxfmt |
+| GraphQL | GraphQL server in configured projects | Prettier or Oxfmt |
 | Lua | Lua language server with Neovim runtime awareness | StyLua |
-| Nix | `nixd`, when installed | Alejandra, when installed |
-| Python | No Python language server configured | Isort followed by Black |
-| Markdown, MDX, YAML | No dedicated language server; MDX is treated as Markdown | Prettier, Biome, or Oxfmt, subject to tool support |
-| Astro, Vue, Svelte | Shared linting and Tailwind features where supported; no dedicated framework server | Prettier, Biome, or Oxfmt, subject to tool support |
+| Nix | `nixd`, when installed | nixfmt, when installed |
+| Python | No Python language server configured | No dedicated formatter configured |
+| Markdown, MDX, YAML | No dedicated language server; MDX is treated as Markdown | Prettier or Oxfmt, subject to tool support |
+| Astro, Vue, Svelte | Shared linting and Tailwind features where supported; no dedicated framework server | Prettier or Oxfmt, subject to tool support |
 | Liquid | Tailwind class support where applicable; no dedicated language server | Prettier |
 
-ESLint, Biome, Stylelint, Oxfmt, and Oxlint use project configuration to determine whether to start.
+ESLint, Stylelint, Oxfmt, and Oxlint use project configuration to determine whether to start.
 Install the project's dependencies and keep its lint configuration in the workspace.
 Relay starts only in a Relay workspace and prefers `node_modules/.bin/relay-compiler`.
 Tailwind includes class detection for helpers such as `cn`, `cva`, `cx`, and `tv`.
@@ -104,8 +104,8 @@ Tailwind includes class detection for helpers such as `cn`, `cva`, `cx`, and `tv
 ### Formatting behavior
 
 Conform formats on save with a 1,200 ms timeout and an LSP fallback.
-The shared formatter chain tries **Prettier, then Biome (`biome-check`), then Oxfmt**, stopping at the first available formatter.
-Prettier and Biome require a detected project configuration directory.
+The shared formatter chain tries Prettier, then Oxfmt, stopping at the first available formatter.
+Prettier requires a detected project configuration directory.
 The chain does not mean each tool supports every listed language; framework support can require project-local Prettier plugins.
 File types without an explicit formatter use Oxfmt when available.
 
@@ -142,7 +142,6 @@ Settings live in [`nvim/lua/plugins/`](nvim/lua/plugins).
 | [folke/todo-comments.nvim](https://github.com/folke/todo-comments.nvim) | Highlighting and search for TODO/FIXME comments |
 | [akinsho/bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Numbered buffer tabs |
 | [nvim-lualine/lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Statusline with diagnostics, LSP status, and buffer count |
-| [mistricky/codesnap.nvim](https://github.com/mistricky/codesnap.nvim) | Code screenshots to the clipboard or `~/Pictures/Codesnap` |
 | [ChmaraX/herdr-nvim](https://github.com/ChmaraX/herdr-nvim) | Herdr integration under `<leader>h` |
 | [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | Lua utility dependency |
 | [MunifTanjim/nui.nvim](https://github.com/MunifTanjim/nui.nvim) | UI component dependency |
@@ -162,14 +161,13 @@ For native installs, use the command column to check your `PATH`; package names 
 | Tailwind CSS | `tailwindcss-language-server` | `tailwindcss-language-server` |
 | GraphQL | `graphql-language-service-cli` | `graphql-lsp` |
 | Stylelint | `stylelint`, custom `stylelint-language-server` derivation | `stylelint`, `stylelint-language-server` |
-| Web linting and formatting | `biome`, `oxlint`, `oxfmt`, `prettier` | `biome`, `oxlint`, `oxfmt`, `prettier` |
+| Web linting and formatting | `oxlint`, `oxfmt`, `prettier` | `oxlint`, `oxfmt`, `prettier` |
 | Lua | `lua-language-server`, `stylua` | `lua-language-server`, `stylua` |
-| Nix | `nixd`, `alejandra` | `nixd`, `alejandra` |
-| Python formatting | `isort`, `black` | `isort`, `black` |
+| Nix | `nixd`, `nixfmt` | `nixd`, `nixfmt` |
 | Images | `imagemagick` | `magick` |
 | Linux clipboard | `wl-clipboard`, `xclip` | `wl-copy`, `wl-paste`, `xclip` |
 
-`nixd` and `alejandra` are optional outside Nix.
+`nixd` and `nixfmt` are optional outside Nix.
 Relay projects must supply `relay-compiler`; the module does not install it.
 macOS clipboard integration uses `pbcopy` and `pbpaste`.
 GitHub pickers need an authenticated `gh` session, and image display needs a compatible terminal.
@@ -207,7 +205,6 @@ LSP mappings appear only when an attached server supports the operation.
 | `<leader>st` | Search TODO comments |
 | `<leader>.` / `<leader>S` | Toggle / select a scratch buffer |
 | `<leader>z` / `<leader>Z` | Toggle zen mode / zoom |
-| `<leader>cc` / `<leader>cs` in visual mode | Copy / save a code screenshot |
 | `Tab` / `Shift-Tab` in insert mode | Navigate completion items or snippet placeholders |
 
 See [`nvim/lua/config/keymaps.lua`](nvim/lua/config/keymaps.lua) for the complete list.
@@ -287,11 +284,11 @@ It checks plugin revisions, tools, mappings, state paths, parsers, and language-
 Test artifacts stay in the printed temporary directory.
 
 `nix flake check` stages the Home Manager-generated home files and runs its lockfile activation before startup.
-Its offline startup check uses pinned plugin sources and cached parser/native-library fixtures.
+Its offline startup check uses pinned plugin sources and cached parser fixtures.
 It also checks development lockfile links and the plain installer.
 CI runs these checks on Linux and the native runtime check on macOS.
 
 For Nix lint tools, use `nix develop`.
-The development shell includes `just`, `stylua`, `luacheck`, `shellcheck`, `shfmt`, and `alejandra`.
+The development shell includes `just`, `stylua`, `luacheck`, `shellcheck`, `shfmt`, and `nixfmt`.
 It does not supply the complete editor runtime toolchain.
 For native lint checks, install `just`, `stylua`, `luacheck`, and `shellcheck`.

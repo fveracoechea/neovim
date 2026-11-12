@@ -3,14 +3,16 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.programs.neovim-config;
   installLock = pkgs.writeShellApplication {
     name = "install-neovim-lock";
-    runtimeInputs = [pkgs.coreutils];
+    runtimeInputs = [ pkgs.coreutils ];
     text = builtins.readFile ../scripts/install-lock.sh;
   };
-in {
+in
+{
   options.programs.neovim-config = {
     enable = lib.mkEnableOption "fveracoechea's shared Neovim configuration";
     pluginLockPath = lib.mkOption {
@@ -41,7 +43,7 @@ in {
     };
 
     home.activation.neovimPluginLock = lib.mkIf (cfg.pluginLockPath == null) (
-      lib.hm.dag.entryAfter ["linkGeneration"] ''
+      lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         run ${lib.getExe installLock} ${../nvim/nvim-pack-lock.json} ${lib.escapeShellArg "${config.xdg.configHome}/nvim/nvim-pack-lock.json"}
       ''
     );
@@ -56,12 +58,15 @@ in {
       withPython3 = false;
       withNodeJs = false;
       withPerl = false;
-      extraWrapperArgs = ["--prefix" "PATH" ":" (lib.makeBinPath config.programs.neovim.extraPackages)];
-      extraPackages = with pkgs;
+      extraWrapperArgs = [
+        "--prefix"
+        "PATH"
+        ":"
+        (lib.makeBinPath config.programs.neovim.extraPackages)
+      ];
+      extraPackages =
+        with pkgs;
         [
-          alejandra
-          biome
-          black
           curl
           fd
           fzf
@@ -72,10 +77,10 @@ in {
           gzip
           graphql-language-service-cli
           imagemagick
-          isort
           lazygit
           lua-language-server
           nixd
+          nixfmt
           oxfmt
           oxlint
           prettier
@@ -87,9 +92,12 @@ in {
           typescript
           unzip
           vscode-langservers-extracted
-          (callPackage ./stylelint-language-server.nix {})
+          (callPackage ./stylelint-language-server.nix { })
         ]
-        ++ lib.optionals stdenv.hostPlatform.isLinux [wl-clipboard xclip];
+        ++ lib.optionals stdenv.hostPlatform.isLinux [
+          wl-clipboard
+          xclip
+        ];
     };
   };
 }

@@ -35,7 +35,6 @@ vim.lsp.document_color.enable(false)
 
 -- Enable the servers listed here that have been configured in `lua/lsp/*`
 vim.lsp.enable {
-  "biome",
   "cssls",
   "eslint",
   "graphql",

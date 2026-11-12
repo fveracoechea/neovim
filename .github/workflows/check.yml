@@ -27,8 +27,8 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: "1"
         run: |
           brew install neovim just stylua luacheck shellcheck tree-sitter-cli \
-            lua-language-server biome oxfmt stylelint typescript vscode-langservers-extracted \
-            tailwindcss-language-server prettier black isort imagemagick fd fzf ripgrep gh lazygit bun
+            lua-language-server oxfmt stylelint typescript vscode-langservers-extracted \
+            tailwindcss-language-server prettier imagemagick fd fzf ripgrep gh lazygit bun
           export BUN_INSTALL="$HOME/.bun"
           bun add -g graphql-language-service-cli@3.5.0 @stylelint/language-server@1.1.1 oxlint@1.88.0
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"

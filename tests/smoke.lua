@@ -31,15 +31,12 @@ local function check_config()
     "graphql-lsp",
     "stylelint-language-server",
     "stylelint",
-    "biome",
     "lua-language-server",
     "oxfmt",
     "oxlint",
     "tsc",
     "stylua",
     "prettier",
-    "isort",
-    "black",
     "magick",
   } do
     local path = vim.fn.exepath(command)
@@ -50,7 +47,6 @@ local function check_config()
   end
 
   for _, name in ipairs {
-    "biome",
     "cssls",
     "eslint",
     "graphql",
@@ -84,8 +80,6 @@ local function check_config()
     assert(vim.treesitter.get_string_parser("", language):parse(), "Parser cannot load: " .. language)
   end
 
-  assert(vim.fn.exists ":CodeSnap" == 2)
-  assert(pcall(require, "codesnap"))
   assert(vim.fn.exists ":Herdr" == 2)
   assert(require("herdr-nvim").config.clear_after_send == true)
   for _, suffix in ipairs { "c", "l", "s", "S" } do
@@ -104,13 +98,25 @@ local function check_config()
   vim.api.nvim_win_set_cursor(0, { 1, #text - 1 })
   assert(vim.fn.maparg("<Tab>", "i", false, true).callback() == "<Tab>")
   assert(vim.fn.maparg("<S-Tab>", "i", false, true).callback() == "<S-Tab>")
-  local formatters = require("conform").formatters_by_ft
-  if vim.fn.executable "alejandra" == 1 then
-    assert(formatters.nix[1] == "alejandra")
+  local conform = require "conform"
+  local formatters = conform.formatters_by_ft
+  assert(vim.deep_equal(formatters.javascript, { "prettier", "oxfmt", stop_after_first = true }))
+  if vim.env.NEOVIM_NIX_TEST == "1" then
+    assert(vim.fn.exepath("nixfmt"):match "^/nix/store/", "Missing Nix-provided nixfmt")
+  end
+  if vim.fn.executable "nixfmt" == 1 then
+    assert(formatters.nix[1] == "nixfmt")
+    local buffer = vim.api.nvim_create_buf(false, true)
+    vim.bo[buffer].filetype = "nix"
+    vim.api.nvim_buf_set_lines(buffer, 0, -1, false, { "{value=1;}" })
+    conform.format { bufnr = buffer, async = false, lsp_format = "never", timeout_ms = 5000 }
+    assert(vim.deep_equal(vim.api.nvim_buf_get_lines(buffer, 0, -1, false), { "{ value = 1; }" }))
+    vim.api.nvim_buf_delete(buffer, { force = true })
   else
     assert(formatters.nix == nil)
   end
   assert(formatters.qml == nil)
+  assert(formatters.python == nil)
 
   require("mini.sessions").write("shared-runtime", { force = true })
   assert(vim.fn.filereadable(vim.fn.stdpath "state" .. "/sessions/shared-runtime") == 1)

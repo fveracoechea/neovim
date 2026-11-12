@@ -7,14 +7,24 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs: let
-    system = "x86_64-linux";
-    pkgs = import inputs.nixpkgs {inherit system;};
-  in {
-    homeManagerModules.default = import ./nix/home-manager.nix;
-    checks.${system} = import ./nix/checks.nix {inherit inputs pkgs;};
-    devShells.${system}.default = pkgs.mkShell {
-      packages = with pkgs; [alejandra just stylua luaPackages.luacheck shellcheck shfmt];
+  outputs =
+    inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import inputs.nixpkgs { inherit system; };
+    in
+    {
+      homeManagerModules.default = import ./nix/home-manager.nix;
+      checks.${system} = import ./nix/checks.nix { inherit inputs pkgs; };
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          nixfmt
+          just
+          stylua
+          luaPackages.luacheck
+          shellcheck
+          shfmt
+        ];
+      };
     };
-  };
 }

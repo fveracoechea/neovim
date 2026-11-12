@@ -8,10 +8,6 @@
       "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
       "src": "https://github.com/catppuccin/nvim"
     },
-    "codesnap.nvim": {
-      "rev": "fccc5c7a2a10ad04da83d0263d50dde7f6da2430",
-      "src": "https://github.com/mistricky/codesnap.nvim"
-    },
     "conform.nvim": {
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"

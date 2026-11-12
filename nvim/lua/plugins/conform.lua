@@ -1,12 +1,9 @@
 local conform = require "conform"
-local js_formatters = { "prettier", "biome-check", "oxfmt", stop_after_first = true }
+local js_formatters = { "prettier", "oxfmt", stop_after_first = true }
 
 conform.setup {
   formatters = {
     prettier = {
-      require_cwd = true,
-    },
-    ["biome-check"] = {
       require_cwd = true,
     },
   },
@@ -27,8 +24,7 @@ conform.setup {
     graphql = js_formatters,
     liquid = { "prettier" },
     lua = { "stylua" },
-    python = { "isort", "black" },
-    nix = vim.fn.executable "alejandra" == 1 and { "alejandra" } or nil,
+    nix = vim.fn.executable "nixfmt" == 1 and { "nixfmt" } or nil,
     ["_"] = { "oxfmt" },
   },
   format_on_save = {

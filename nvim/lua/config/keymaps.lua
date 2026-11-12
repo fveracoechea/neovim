@@ -31,10 +31,6 @@ map("n", "<C-y>", function()
   Snacks.explorer()
 end, { desc = "Open the file manager at the current file" })
 
--- CodeSnap screenshots
-map("v", "<leader>cc", "<CMD>CodeSnap<CR>", { desc = "Save selected code snapshot into clipboard" })
-map("v", "<leader>cs", "<CMD>CodeSnapSave<CR>", { desc = "Save selected code snapshot in ~/Pictures" })
-
 -- ============================================================================
 -- SNACKS PLUGIN MAPPINGS
 -- ============================================================================
